@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DWOL's DAGSA 2026 — Deep and Wide One Love</title>
+  <meta name="description" content="DWOL's DAGSA 2026 — Deep and Wide One Love youth event website. Meet the FAMs, view the photobooth gallery, and learn more about us." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <img src="ASSETS/14.png" alt="DWOL's DAGSA Logo" class="nav-logo-img" />
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#home" class="nav-link active" data-tab="home" onclick="switchTab('home', this)">HOME</a></li>
+      <li><a href="#fam" class="nav-link" data-tab="fam" onclick="switchTab('fam', this)">FAM</a></li>
+      <li><a href="#gallery" class="nav-link" data-tab="gallery" onclick="switchTab('gallery', this)">GALLERY</a></li>
+      <li><a href="#about" class="nav-link" data-tab="about" onclick="switchTab('about', this)">ABOUT</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ===== HOME TAB ===== -->
+  <section id="home" class="tab-section active">
+
+    <!-- Hero -->
+    <div class="hero" style="background-image: url('ASSETS/BACKGROUND 2.png');">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <img src="ASSETS/15.png" alt="DWOL's DAGSA June 14, 2026" class="hero-logo animate-float" />
+        <h1 class="hero-tagline">Where Faith Meets Family</h1>
+        <p class="hero-sub">Deep And Wide One Love · June 14, 2026</p>
+        <a href="#fam" class="btn btn-primary" onclick="switchTab('fam', document.querySelector('[data-tab=fam]'))">Meet the FAMs ↓</a>
+      </div>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="section-container welcome-section">
+      <div class="section-label">WELCOME</div>
+      <h2 class="section-title">Welcome to DAGSA 2026!</h2>
+      <p class="section-desc">
+        DAGSA is DWOL's (Deep and Wide One Love) annual gathering that brings together every family group under one roof
+        for a night of worship, fellowship, and celebration. This year's theme is <strong>"One Love"</strong> — a reminder
+        that no matter which FAM you belong to, we are one body, one heart, one family in Christ.
+      </p>
+      <p class="section-desc">
+        Join us as we celebrate togetherness, honor God through praise, and make memories that will last a lifetime.
+        Welcome home, DAGSA family!
+      </p>
+    </div>
+
+    <!-- Preaching Summary -->
+    <div class="preaching-section">
+      <div class="preaching-bg" style="background-image: url('ASSETS/BACKGROUND.png');"></div>
+      <div class="section-container">
+        <div class="section-label">WORD OF GOD</div>
+        <h2 class="section-title" style="color:#fff;">Preaching Summary</h2>
+        <div class="preaching-card">
+          <div class="preaching-text">
+            <div class="sermon-badge">Tonight's Message</div>
+            <h3 class="sermon-title">"One Love, One Body"</h3>
+            <p class="sermon-verse">📖 1 Corinthians 12:12–13</p>
+            <p class="sermon-body">
+              In a world that constantly pulls us apart, God calls us to something greater — unity.
+              Tonight's message reminds us that just as the body has many parts but remains one,
+              so too are we: different FAMs, different backgrounds, different stories — but one Spirit,
+              one baptism, one love.
+            </p>
+            <p class="sermon-body">
+              As we gather tonight, let this truth anchor us: <em>You are not alone. You belong here.
+              You are loved.</em> May every song sung, every prayer prayed, and every laugh shared
+              remind us that we are deeply and widely loved by our Father.
+            </p>
+            <div class="sermon-key-points">
+              <div class="key-point"><span class="kp-num">01</span><span>God's love unites what the world divides.</span></div>
+              <div class="key-point"><span class="kp-num">02</span><span>Every FAM is essential — no one is extra.</span></div>
+              <div class="key-point"><span class="kp-num">03</span><span>Our strength is found in our togetherness.</span></div>
+            </div>
+          </div>
+          <div class="preaching-photo">
+            <div class="photo-frame">
+              <img src="ASSETS/preacher.jpg" alt="Tonight's Preacher" class="preacher-img" />
+              <div class="photo-label">Tonight's Speaker</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== FAM TAB ===== -->
+  <section id="fam" class="tab-section">
+    <div class="fam-hero" style="background-image: url('ASSETS/BACKGROUND.png');">
+      <div class="hero-overlay"></div>
+      <div class="fam-hero-content">
+        <div class="section-label" style="color:#ffd700;">THE FAMILIES</div>
+        <h2 class="section-title" style="color:#fff; font-size: clamp(2rem, 5vw, 3.5rem);">Meet the FAM</h2>
+        <p style="color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto; text-align:center;">
+          Four families. One love. Get to know each FAM and see their incredible photos!
+        </p>
+      </div>
+    </div>
+
+    <div class="section-container fam-grid-section">
+      <div class="fam-grid">
+
+        <!-- JUNIOR FAM -->
+        <div class="fam-card" id="fam-junior" style="--fam-color: #e63946;">
+          <div class="fam-card-inner">
+            <div class="fam-img-wrap">
+              <img src="ASSETS/FAMs/JUNIOR FAM.png" alt="Junior FAM" class="fam-card-img" />
+              <div class="fam-img-overlay"></div>
+            </div>
+            <div class="fam-card-body">
+              <div class="fam-color-bar" style="background: #e63946;"></div>
+              <h3 class="fam-name">Junior FAM</h3>
+              <p class="fam-desc">The little ones with the biggest hearts. Full of energy, faith, and the purest kind of love for God!</p>
+              <button class="btn btn-fam" style="--fam-color:#e63946;" onclick="openFamGallery('junior')" id="btn-junior-fam">
+                See Our Pics 📸
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRE-UNI FAM -->
+        <div class="fam-card" id="fam-preuni" style="--fam-color: #f4d03f;">
+          <div class="fam-card-inner">
+            <div class="fam-img-wrap">
+              <img src="ASSETS/FAMs/PRE-UNI FAM.png" alt="Pre-Uni FAM" class="fam-card-img" />
+              <div class="fam-img-overlay"></div>
+            </div>
+            <div class="fam-card-body">
+              <div class="fam-color-bar" style="background: #f4d03f;"></div>
+              <h3 class="fam-name">Pre-Uni FAM</h3>
+              <p class="fam-desc">On the threshold of a new chapter. These young ones carry passion, potential, and a faith that moves mountains.</p>
+              <button class="btn btn-fam" style="--fam-color:#f4d03f; color:#0d1b3e;" onclick="openFamGallery('preuni')" id="btn-preuni-fam">
+                See Our Pics 📸
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLLEGIATE FAM -->
+        <div class="fam-card" id="fam-collegiate" style="--fam-color: #1d4ed8;">
+          <div class="fam-card-inner">
+            <div class="fam-img-wrap">
+              <img src="ASSETS/FAMs/COLLEGIATE FAM.png" alt="Collegiate FAM" class="fam-card-img" />
+              <div class="fam-img-overlay"></div>
+            </div>
+            <div class="fam-card-body">
+              <div class="fam-color-bar" style="background: #1d4ed8;"></div>
+              <h3 class="fam-name">Collegiate FAM</h3>
+              <p class="fam-desc">Navigating college with grace and grit. This FAM proves that campus life and deep faith go hand in hand.</p>
+              <button class="btn btn-fam" style="--fam-color:#1d4ed8;" onclick="openFamGallery('collegiate')" id="btn-collegiate-fam">
+                See Our Pics 📸
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- YOUNG ADULTS FAM -->
+        <div class="fam-card" id="fam-youngadults" style="--fam-color: #16a34a;">
+          <div class="fam-card-inner">
+            <div class="fam-img-wrap">
+              <img src="ASSETS/FAMs/YOUNG ADULTS FAM.png" alt="Young Adults FAM" class="fam-card-img" />
+              <div class="fam-img-overlay"></div>
+            </div>
+            <div class="fam-card-body">
+              <div class="fam-color-bar" style="background: #16a34a;"></div>
+              <h3 class="fam-name">Young Adults FAM</h3>
+              <p class="fam-desc">Adulting in faith. This FAM is building careers, families, and a legacy rooted in God's love and purpose.</p>
+              <button class="btn btn-fam" style="--fam-color:#16a34a;" onclick="openFamGallery('youngadults')" id="btn-youngadults-fam">
+                See Our Pics 📸
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FAM Gallery Modal -->
+    <div class="fam-modal" id="fam-modal" onclick="closeFamModal(event)">
+      <div class="fam-modal-content" id="fam-modal-content">
+        <button class="modal-close" onclick="closeFamModalBtn()" id="btn-close-fam-modal" aria-label="Close modal">✕</button>
+        <div class="modal-header">
+          <h3 class="modal-title" id="modal-fam-title">FAM Gallery</h3>
+        </div>
+        <div class="modal-gallery" id="modal-gallery">
+          <p style="color:rgba(255,255,255,0.6); text-align:center; padding:2rem;">Photos coming soon! 📸</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PHOTOBOOTH GALLERY TAB ===== -->
+  <section id="gallery" class="tab-section">
+    <div class="gallery-hero" style="background-image: url('ASSETS/BACKGROUND 2.png');">
+      <div class="hero-overlay"></div>
+      <div class="gallery-hero-content">
+        <div class="section-label" style="color:#ffd700;">MEMORIES</div>
+        <h2 class="section-title" style="color:#fff; font-size: clamp(2rem, 5vw, 3.5rem);">Photobooth Gallery</h2>
+        <p style="color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto; text-align:center;">
+          Capture the moment, keep the memory. Download your favorites below!
+        </p>
+      </div>
+    </div>
+
+    <div class="section-container gallery-section">
+
+      <!-- Section: All FAMs -->
+      <div class="gallery-group">
+        <div class="gallery-group-header">
+          <h3 class="gallery-group-title">⚡ Photobooth Shots</h3>
+          <div class="gallery-group-line"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item" id="gallery-item-1">
+            <div class="gallery-placeholder">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" onclick="downloadPhoto(this, 'dagsa-photo-1')" id="btn-dl-1" aria-label="Download photo 1">
+              ⬇ Download
+            </button>
+          </div>
+          <div class="gallery-item" id="gallery-item-2">
+            <div class="gallery-placeholder">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" onclick="downloadPhoto(this, 'dagsa-photo-2')" id="btn-dl-2" aria-label="Download photo 2">
+              ⬇ Download
+            </button>
+          </div>
+          <div class="gallery-item" id="gallery-item-3">
+            <div class="gallery-placeholder">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" onclick="downloadPhoto(this, 'dagsa-photo-3')" id="btn-dl-3" aria-label="Download photo 3">
+              ⬇ Download
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Junior FAM -->
+      <div class="gallery-group">
+        <div class="gallery-group-header">
+          <h3 class="gallery-group-title" style="color:#e63946;">🏠 Junior FAM</h3>
+          <div class="gallery-group-line" style="background: #e63946;"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item" id="gallery-junior-1">
+            <div class="gallery-placeholder" style="border-color: rgba(230,57,70,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#e63946;" onclick="downloadPhoto(this, 'junior-fam-1')" id="btn-dl-junior-1">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-junior-2">
+            <div class="gallery-placeholder" style="border-color: rgba(230,57,70,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#e63946;" onclick="downloadPhoto(this, 'junior-fam-2')" id="btn-dl-junior-2">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-junior-3">
+            <div class="gallery-placeholder" style="border-color: rgba(230,57,70,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#e63946;" onclick="downloadPhoto(this, 'junior-fam-3')" id="btn-dl-junior-3">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Pre-Uni FAM -->
+      <div class="gallery-group">
+        <div class="gallery-group-header">
+          <h3 class="gallery-group-title" style="color:#f4d03f;">🏠 Pre-Uni FAM</h3>
+          <div class="gallery-group-line" style="background: #f4d03f;"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item" id="gallery-preuni-1">
+            <div class="gallery-placeholder" style="border-color: rgba(244,208,63,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#c9a800; color:#fff;" onclick="downloadPhoto(this, 'preuni-fam-1')" id="btn-dl-preuni-1">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-preuni-2">
+            <div class="gallery-placeholder" style="border-color: rgba(244,208,63,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#c9a800; color:#fff;" onclick="downloadPhoto(this, 'preuni-fam-2')" id="btn-dl-preuni-2">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-preuni-3">
+            <div class="gallery-placeholder" style="border-color: rgba(244,208,63,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#c9a800; color:#fff;" onclick="downloadPhoto(this, 'preuni-fam-3')" id="btn-dl-preuni-3">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Collegiate FAM -->
+      <div class="gallery-group">
+        <div class="gallery-group-header">
+          <h3 class="gallery-group-title" style="color:#60a5fa;">🏠 Collegiate FAM</h3>
+          <div class="gallery-group-line" style="background: #1d4ed8;"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item" id="gallery-collegiate-1">
+            <div class="gallery-placeholder" style="border-color: rgba(29,78,216,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#1d4ed8;" onclick="downloadPhoto(this, 'collegiate-fam-1')" id="btn-dl-collegiate-1">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-collegiate-2">
+            <div class="gallery-placeholder" style="border-color: rgba(29,78,216,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#1d4ed8;" onclick="downloadPhoto(this, 'collegiate-fam-2')" id="btn-dl-collegiate-2">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-collegiate-3">
+            <div class="gallery-placeholder" style="border-color: rgba(29,78,216,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#1d4ed8;" onclick="downloadPhoto(this, 'collegiate-fam-3')" id="btn-dl-collegiate-3">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Young Adults FAM -->
+      <div class="gallery-group">
+        <div class="gallery-group-header">
+          <h3 class="gallery-group-title" style="color:#4ade80;">🏠 Young Adults FAM</h3>
+          <div class="gallery-group-line" style="background: #16a34a;"></div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item" id="gallery-ya-1">
+            <div class="gallery-placeholder" style="border-color: rgba(22,163,74,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#16a34a;" onclick="downloadPhoto(this, 'youngadults-fam-1')" id="btn-dl-ya-1">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-ya-2">
+            <div class="gallery-placeholder" style="border-color: rgba(22,163,74,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#16a34a;" onclick="downloadPhoto(this, 'youngadults-fam-2')" id="btn-dl-ya-2">⬇ Download</button>
+          </div>
+          <div class="gallery-item" id="gallery-ya-3">
+            <div class="gallery-placeholder" style="border-color: rgba(22,163,74,0.4);">
+              <div class="placeholder-icon">📷</div>
+              <p>Photo Coming Soon</p>
+            </div>
+            <button class="btn-download" style="background:#16a34a;" onclick="downloadPhoto(this, 'youngadults-fam-3')" id="btn-dl-ya-3">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== ABOUT TAB ===== -->
+  <section id="about" class="tab-section">
+    <div class="about-hero" style="background-image: url('ASSETS/BACKGROUND 2.png');">
+      <div class="hero-overlay"></div>
+      <div class="about-hero-content">
+        <img src="ASSETS/14.png" alt="DWOL's DAGSA" class="about-logo" />
+      </div>
+    </div>
+
+    <div class="section-container about-section">
+
+      <!-- About Description -->
+      <div class="about-card">
+        <div class="section-label">ABOUT US</div>
+        <h2 class="section-title">What is DAGSA?</h2>
+        <p class="section-desc">
+          <strong>DAGSA</strong> — short for <em>"Dagsa"</em> (meaning "surge" or "overflow") — is DWOL's flagship annual gathering
+          for all FAMs under the ICC Youth Bayambang umbrella. It's a night where every generation of young believers
+          comes together to worship, celebrate, and be reminded of what matters most: love — God's love, and ours for one another.
+        </p>
+        <p class="section-desc">
+          This website was created to document the beauty of DAGSA 2026 — from the powerful word shared, to the
+          four FAMs that make up our community, to the photobooth memories you'll treasure for years to come.
+        </p>
+        <p class="section-desc">
+          Whether you're a member finding your FAM photos, a first-timer getting to know us, or a parent checking in
+          on your kids — welcome! You're part of this story too. 💛
+        </p>
+      </div>
+
+      <!-- Socials -->
+      <div class="socials-card">
+        <div class="section-label">CONNECT WITH US</div>
+        <h2 class="section-title">Find Us Online</h2>
+        <p class="section-desc" style="text-align:center;">Stay updated with everything happening at Deep and Wide One Love.</p>
+
+        <div class="socials-grid">
+          <a href="https://www.facebook.com/iccyouthbayambang" target="_blank" rel="noopener noreferrer" class="social-card" id="link-facebook">
+            <div class="social-icon facebook-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+                <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.277h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+              </svg>
+            </div>
+            <div class="social-info">
+              <span class="social-platform">Facebook</span>
+              <span class="social-handle">@iccyouthbayambang</span>
+            </div>
+            <div class="social-arrow">→</div>
+          </a>
+
+          <a href="https://www.instagram.com/deepandwide.onelove/" target="_blank" rel="noopener noreferrer" class="social-card" id="link-instagram">
+            <div class="social-icon instagram-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </div>
+            <div class="social-info">
+              <span class="social-platform">Instagram</span>
+              <span class="social-handle">@deepandwide.onelove</span>
+            </div>
+            <div class="social-arrow">→</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <div class="about-footer-note">
+        <img src="ASSETS/13.png" alt="DAGSA Houses" class="footer-houses" />
+        <p>Made with ❤️ for DAGSA 2026 · Deep and Wide One Love · ICC Youth Bayambang</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== PAGE FOOTER ===== -->
+  <footer class="site-footer">
+    <p>© 2026 DWOL's DAGSA · ICC Youth Bayambang · All Rights Reserved</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

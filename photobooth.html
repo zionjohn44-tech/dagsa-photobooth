@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>DAGSA Photobooth — DWOL's DAGSA 2026</title>
+  <meta name="description" content="DAGSA Photobooth App — Capture your DAGSA 2026 memories!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ==================== RESET & BASE ==================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #070f2b;
+      --blue:    #1340c4;
+      --gold:    #f5c518;
+      --red:     #e63946;
+      --green:   #22c55e;
+      --white:   #ffffff;
+      --glass:   rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.15);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Outfit', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      touch-action: manipulation;
+    }
+
+    /* ==================== SCREENS ==================== */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96);
+      transition: opacity 0.45s cubic-bezier(.4,0,.2,1), transform 0.45s cubic-bezier(.4,0,.2,1);
+      z-index: 1;
+      background: var(--navy);
+      overflow: hidden;
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: scale(1);
+      z-index: 2;
+    }
+
+    /* ==================== PARTICLE BG ==================== */
+    .bg-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.18;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      0%   { transform: translateY(110vh) scale(0.8); opacity: 0; }
+      10%  { opacity: 0.18; }
+      90%  { opacity: 0.18; }
+      100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+    }
+
+    /* ==================== SCREEN CONTENT WRAPPER ==================== */
+    .screen-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    /* ==================== LOGO ==================== */
+    .logo-img {
+      width: clamp(220px, 55vw, 400px);
+      filter: drop-shadow(0 8px 32px rgba(245,197,24,0.4));
+      animation: float-logo 4s ease-in-out infinite;
+    }
+    @keyframes float-logo {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    /* ==================== TITLES ==================== */
+    .screen-label {
+      font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .screen-title {
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .screen-sub {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+      user-select: none;
+    }
+    .btn:active { transform: scale(0.94); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #ffab00);
+      color: var(--navy);
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      padding: clamp(0.9rem, 2.5vw, 1.1rem) clamp(2.5rem, 7vw, 4rem);
+      box-shadow: 0 6px 40px rgba(245,197,24,0.45);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: scale(1.04); }
+
+    .btn-secondary {
+      background: var(--glass);
+      border: 2px solid var(--glass-border);
+      color: var(--white);
+      font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+      padding: clamp(0.7rem, 2vw, 0.95rem) clamp(1.8rem, 5vw, 3rem);
+      backdrop-filter: blur(12px);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--red), #b91c1c);
+      color: var(--white);
+      font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+      padding: clamp(0.7rem, 2vw, 0.95rem) clamp(1.8rem, 5vw, 3rem);
+      box-shadow: 0 4px 24px rgba(230,57,70,0.35);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, var(--green), #15803d);
+      color: var(--white);
+      font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+      padding: clamp(0.7rem, 2vw, 0.95rem) clamp(1.8rem, 5vw, 3rem);
+      box-shadow: 0 4px 24px rgba(34,197,94,0.35);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* ==================== SCREEN: WELCOME ==================== */
+    #screen-welcome .app-title {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.12em;
+      margin-top: 0.4rem;
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+    }
+
+    /* ==================== SCREEN: SELECT LAYOUT ==================== */
+    .layout-card {
+      background: var(--glass);
+      border: 2px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 160px;
+    }
+    .layout-card:hover, .layout-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245,197,24,0.25), 0 8px 32px rgba(245,197,24,0.2);
+      transform: scale(1.03);
+    }
+    .layout-card.selected { background: rgba(245,197,24,0.1); }
+    .layout-preview {
+      width: 80px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .layout-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+    .layout-check {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .layout-card.selected .layout-check { opacity: 1; transform: scale(1); }
+
+    /* ==================== SCREEN: SELECT COUNTDOWN ==================== */
+    .countdown-options {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .countdown-btn {
+      width: clamp(90px, 20vw, 130px);
+      height: clamp(90px, 20vw, 130px);
+      border-radius: 20px;
+      background: var(--glass);
+      border: 2px solid var(--glass-border);
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.15rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s, background 0.2s;
+      backdrop-filter: blur(12px);
+    }
+    .countdown-btn span.secs-label {
+      font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+    .countdown-btn:hover, .countdown-btn.selected {
+      border-color: var(--gold);
+      background: rgba(245,197,24,0.12);
+      box-shadow: 0 0 0 3px rgba(245,197,24,0.2);
+      transform: scale(1.07);
+      color: var(--gold);
+    }
+    .countdown-btn.selected span.secs-label { color: rgba(245,197,24,0.7); }
+
+    /* ==================== SCREEN: TAKE PHOTOS ==================== */
+    #screen-camera {
+      padding: 1rem;
+      background: #000;
+    }
+    .camera-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 3 / 4;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 8px 60px rgba(0,0,0,0.8);
+      border: 3px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    #camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* mirror front cam */
+      display: block;
+    }
+
+    /* Countdown overlay */
+    .countdown-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      z-index: 5;
+      pointer-events: none;
+    }
+    .countdown-number {
+      font-size: clamp(5rem, 18vw, 10rem);
+      font-weight: 900;
+      color: var(--white);
+      text-shadow: 0 0 40px rgba(245,197,24,0.9), 0 4px 20px rgba(0,0,0,0.8);
+      animation: countdown-pop 0.4s cubic-bezier(.4,0,.2,1);
+      line-height: 1;
+    }
+    @keyframes countdown-pop {
+      0%  { transform: scale(1.5); opacity: 0; }
+      50% { opacity: 1; }
+      100%{ transform: scale(1); }
+    }
+    .countdown-msg {
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    /* Flash effect */
+    .camera-flash {
+      position: absolute;
+      inset: 0;
+      background: white;
+      opacity: 0;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.08s;
+    }
+    .camera-flash.flash-on { opacity: 1; }
+
+    /* Photo strip progress dots */
+    .photo-progress {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    .photo-dot {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 2px dashed rgba(255,255,255,0.25);
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      transition: border-color 0.3s;
+      flex-shrink: 0;
+    }
+    .photo-dot.taken {
+      border-color: var(--gold);
+      border-style: solid;
+      box-shadow: 0 0 12px rgba(245,197,24,0.4);
+    }
+    .photo-dot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .camera-status {
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      margin-top: 0.75rem;
+      letter-spacing: 0.05em;
+      min-height: 1.5em;
+    }
+
+    /* ==================== SCREEN: CHECK PHOTOS ==================== */
+    .check-layout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      width: 100%;
+      max-width: 900px;
+    }
+    .photostrip-preview-wrap {
+      flex-shrink: 0;
+      position: relative;
+    }
+    .photostrip-preview {
+      height: clamp(320px, 65vh, 520px);
+      border-radius: 16px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.7);
+      display: block;
+    }
+    #canvas-composite {
+      display: none;
+    }
+
+    .check-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      min-width: 180px;
+    }
+    .check-label {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    .check-sublabel {
+      font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+
+    /* ==================== SCREEN: THANK YOU ==================== */
+    .thankyou-icon {
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      animation: heartbeat 1.4s ease-in-out infinite;
+      margin-bottom: 0.5rem;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.15); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.1); }
+      56%       { transform: scale(1); }
+    }
+    .countdown-bar {
+      width: 200px;
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+    .countdown-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 99px;
+      transition: width linear;
+    }
+    .return-note {
+      font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.5rem;
+    }
+
+    /* ==================== GLASSMORPHIC CARD ==================== */
+    .glass-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 540px;
+    }
+
+    /* ==================== DECORATIVE LINES ==================== */
+    .deco-line {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+      margin: 0.5rem auto 1.5rem;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 600px) {
+      .check-layout { flex-direction: column; gap: 1.2rem; }
+      .check-actions { flex-direction: row; flex-wrap: wrap; min-width: unset; }
+      .photostrip-preview { height: clamp(260px, 55vh, 380px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ======================================================
+     PARTICLES BACKGROUND
+====================================================== -->
+<div class="bg-particles" id="bg-particles"></div>
+
+<!-- ======================================================
+     SCREEN 1: WELCOME
+====================================================== -->
+<section class="screen active" id="screen-welcome">
+  <div class="screen-inner">
+    <img src="ASSETS/15.png" alt="DWOL's DAGSA June 14, 2026" class="logo-img" />
+    <p class="app-title">📸 Photobooth App</p>
+    <button class="btn btn-primary" id="btn-start" onclick="goTo('screen-layout')">
+      ✨ START
+    </button>
+  </div>
+</section>
+
+<!-- ======================================================
+     SCREEN 2: SELECT LAYOUT
+====================================================== -->
+<section class="screen" id="screen-layout">
+  <div class="screen-inner">
+    <div class="screen-label">Step 1 of 3</div>
+    <h1 class="screen-title">Select Layout</h1>
+    <div class="deco-line"></div>
+    <div style="display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center; margin-bottom:2.5rem;">
+      <div class="layout-card selected" id="layout-card-1" onclick="selectLayout(1)">
+        <img class="layout-preview" src="FOR PHOTOSHOOT/Dagsa June 2026 Photobooth Photostrip.png" alt="DAGSA Photostrip" />
+        <div class="layout-name">DAGSA Photostrip</div>
+        <div class="layout-check">✓</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('screen-countdown')">Continue →</button>
+  </div>
+</section>
+
+<!-- ======================================================
+     SCREEN 3: SELECT COUNTDOWN DURATION
+====================================================== -->
+<section class="screen" id="screen-countdown">
+  <div class="screen-inner">
+    <div class="screen-label">Step 2 of 3</div>
+    <h1 class="screen-title">Choose Countdown</h1>
+    <div class="deco-line"></div>
+    <p class="screen-sub">How many seconds before each shot?</p>
+    <div class="countdown-options">
+      <button class="countdown-btn" id="cd-3" onclick="selectCountdown(3)">
+        3 <span class="secs-label">secs</span>
+      </button>
+      <button class="countdown-btn selected" id="cd-5" onclick="selectCountdown(5)">
+        5 <span class="secs-label">secs</span>
+      </button>
+      <button class="countdown-btn" id="cd-10" onclick="selectCountdown(10)">
+        10 <span class="secs-label">secs</span>
+      </button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo('screen-layout')">← Back</button>
+      <button class="btn btn-primary" onclick="startCamera()">📷 Ready!</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SCREEN 4: TAKE PHOTOS
+====================================================== -->
+<section class="screen" id="screen-camera">
+  <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; max-width:600px;">
+    <div class="camera-wrap">
+      <video id="camera-video" autoplay playsinline muted></video>
+      <!-- Countdown overlay (hidden initially) -->
+      <div class="countdown-overlay" id="countdown-overlay" style="display:none;">
+        <div class="countdown-number" id="countdown-number">3</div>
+        <div class="countdown-msg" id="countdown-msg">Get ready!</div>
+      </div>
+      <!-- Flash -->
+      <div class="camera-flash" id="camera-flash"></div>
+    </div>
+
+    <!-- Captured photo dots -->
+    <div class="photo-progress">
+      <div class="photo-dot" id="dot-1"></div>
+      <div class="photo-dot" id="dot-2"></div>
+      <div class="photo-dot" id="dot-3"></div>
+    </div>
+    <div class="camera-status" id="camera-status">Getting ready…</div>
+  </div>
+</section>
+
+<!-- ======================================================
+     SCREEN 5: CHECK PHOTOS
+====================================================== -->
+<section class="screen" id="screen-check">
+  <div class="screen-inner" style="max-width:900px;">
+    <div class="screen-label">Almost there!</div>
+    <h1 class="screen-title">Your Photostrip</h1>
+    <div class="deco-line"></div>
+
+    <div class="check-layout">
+      <div class="photostrip-preview-wrap">
+        <!-- The final composited image is shown here -->
+        <img id="photostrip-result" class="photostrip-preview" alt="Your DAGSA Photostrip" src="" />
+      </div>
+      <div class="check-actions">
+        <div>
+          <div class="check-label">Looks good?</div>
+          <div class="check-sublabel">Download or retake your photos.</div>
+        </div>
+        <button class="btn btn-success" id="btn-confirm" onclick="confirmPhotos()">
+          ✅ Download &amp; Confirm
+        </button>
+        <button class="btn btn-danger" id="btn-retake" onclick="retakePhotos()">
+          🔄 Retake
+        </button>
+        <button class="btn btn-secondary" onclick="goTo('screen-countdown')">
+          ← Settings
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Hidden canvas for compositing -->
+  <canvas id="canvas-composite"></canvas>
+</section>
+
+<!-- ======================================================
+     SCREEN 6: THANK YOU
+====================================================== -->
+<section class="screen" id="screen-thankyou">
+  <div class="screen-inner">
+    <div class="thankyou-icon">💛</div>
+    <div class="screen-label">All done!</div>
+    <h1 class="screen-title">Thank You!</h1>
+    <div class="deco-line"></div>
+    <p class="screen-sub">
+      Your DAGSA photostrip has been saved.<br />
+      God bless you &amp; see you next time! 🙌
+    </p>
+    <img src="ASSETS/14.png" alt="DWOL's DAGSA" style="width:clamp(140px,35vw,240px); opacity:0.85; margin-bottom:1.5rem;" />
+    <div class="countdown-bar">
+      <div class="countdown-bar-fill" id="return-bar" style="width:100%;"></div>
+    </div>
+    <p class="return-note">Returning to start in <span id="return-seconds">5</span> seconds…</p>
+  </div>
+</section>
+
+<!-- Hidden capture canvas (never shown) -->
+<canvas id="canvas-capture" style="display:none;"></canvas>
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+let selectedCountdown = 5;
+let capturedPhotos    = []; // array of ImageData/dataURLs from webcam
+let stream            = null;
+let photoSequenceRunning = false;
+
+/* ============================================================
+   PARTICLES
+============================================================ */
+(function spawnParticles() {
+  const container = document.getElementById('bg-particles');
+  const colors = ['#f5c518','#1340c4','#e63946','#22c55e','#ffffff'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 8 + Math.random() * 24;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${8+Math.random()*14}s;
+      animation-delay:-${Math.random()*14}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+/* ============================================================
+   SCREEN 2: LAYOUT SELECTION
+============================================================ */
+function selectLayout(id) {
+  document.querySelectorAll('.layout-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('layout-card-' + id).classList.add('selected');
+}
+
+/* ============================================================
+   SCREEN 3: COUNTDOWN SELECTION
+============================================================ */
+function selectCountdown(secs) {
+  selectedCountdown = secs;
+  document.querySelectorAll('.countdown-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('cd-' + secs).classList.add('selected');
+}
+
+/* ============================================================
+   SCREEN 4: CAMERA
+============================================================ */
+async function startCamera() {
+  goTo('screen-camera');
+  capturedPhotos = [];
+  resetDots();
+  document.getElementById('camera-status').textContent = 'Starting camera…';
+
+  try {
+    // Stop existing stream
+    if (stream) { stream.getTracks().forEach(t => t.stop()); }
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+      audio: false
+    });
+
+    const video = document.getElementById('camera-video');
+    video.srcObject = stream;
+    await video.play();
+
+    // Give camera a moment to warm up
+    setTimeout(() => {
+      document.getElementById('camera-status').textContent = 'Camera ready! Starting photo sequence…';
+      setTimeout(() => runPhotoSequence(), 1200);
+    }, 800);
+
+  } catch (err) {
+    console.error('Camera error:', err);
+    document.getElementById('camera-status').textContent = '⚠️ Camera not accessible. Please allow camera access.';
+  }
+}
+
+function resetDots() {
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('dot-' + i);
+    dot.classList.remove('taken');
+    dot.innerHTML = '';
+  }
+}
+
+async function runPhotoSequence() {
+  if (photoSequenceRunning) return;
+  photoSequenceRunning = true;
+
+  const msgs = ['Strike a pose! 🕺', 'Looking good! 😄', 'Last one! Give it all! 🔥'];
+
+  for (let photoIdx = 0; photoIdx < 3; photoIdx++) {
+    // Countdown
+    await doCountdown(selectedCountdown, msgs[photoIdx]);
+    // Take the photo
+    capturePhoto(photoIdx);
+    await delay(600); // pause after flash before next round
+  }
+
+  photoSequenceRunning = false;
+  stopCamera();
+  buildComposite();
+}
+
+async function doCountdown(secs, msg) {
+  const overlay = document.getElementById('countdown-overlay');
+  const numEl   = document.getElementById('countdown-number');
+  const msgEl   = document.getElementById('countdown-msg');
+
+  overlay.style.display = 'flex';
+  msgEl.textContent = msg;
+
+  for (let i = secs; i >= 1; i--) {
+    numEl.textContent = i;
+    // Trigger re-animation
+    numEl.style.animation = 'none';
+    numEl.offsetHeight; // reflow
+    numEl.style.animation = '';
+    await delay(1000);
+  }
+
+  overlay.style.display = 'none';
+}
+
+function capturePhoto(index) {
+  const video  = document.getElementById('camera-video');
+  const canvas = document.getElementById('canvas-capture');
+  const ctx    = canvas.getContext('2d');
+
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+
+  // Mirror to match preview
+  ctx.save();
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+
+  const dataURL = canvas.toDataURL('image/jpeg', 0.92);
+  capturedPhotos[index] = dataURL;
+
+  // Flash effect
+  const flash = document.getElementById('camera-flash');
+  flash.classList.add('flash-on');
+  setTimeout(() => flash.classList.remove('flash-on'), 200);
+
+  // Update dot thumbnail
+  const dot = document.getElementById('dot-' + (index + 1));
+  dot.classList.add('taken');
+  const img = document.createElement('img');
+  img.src = dataURL;
+  dot.appendChild(img);
+
+  // Status update
+  const statusTexts = ['Photo 1 ✅', 'Photos 1–2 ✅', '3 photos done! ✅'];
+  document.getElementById('camera-status').textContent = statusTexts[index];
+}
+
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ============================================================
+   SCREEN 5: COMPOSITE BUILDER
+============================================================ */
+/*
+  The photostrip template is 542 × 1479 px (approx).
+  The 3 white boxes sit at approximately:
+    Slot 1: y ≈ 310,  x ≈ 40,  w ≈ 462,  h ≈ 292
+    Slot 2: y ≈ 658,  x ≈ 40,  w ≈ 462,  h ≈ 292
+    Slot 3: y ≈ 1004, x ≈ 40,  w ≈ 462,  h ≈ 350
+  These values are calibrated to the actual template image.
+*/
+
+const TEMPLATE_SRC = 'FOR%20PHOTOSHOOT/Dagsa%20June%202026%20Photobooth%20Photostrip.png';
+
+// Slot positions relative to the template (fraction of template dimensions)
+// We use percentage-based coords so it scales correctly
+// Template original: ~542w × ~1479h
+const SLOTS = [
+  { xPct: 0.053, yPct: 0.196, wPct: 0.888, hPct: 0.205 }, // slot 1
+  { xPct: 0.053, yPct: 0.423, wPct: 0.888, hPct: 0.205 }, // slot 2
+  { xPct: 0.053, yPct: 0.649, wPct: 0.888, hPct: 0.246 }, // slot 3
+];
+
+async function buildComposite() {
+  const canvas = document.getElementById('canvas-composite');
+  const ctx    = canvas.getContext('2d');
+
+  // Use fetch → Blob URL to avoid tainted-canvas restrictions
+  // (works both locally via file:// and when hosted on GitHub Pages)
+  let templateBlobUrl;
+  try {
+    const resp = await fetch(TEMPLATE_SRC);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const blob = await resp.blob();
+    templateBlobUrl = URL.createObjectURL(blob);
+  } catch (err) {
+    console.error('Failed to fetch template:', err);
+    alert('Could not load the photostrip template.\n\nMake sure the file exists at:\n"FOR PHOTOSHOOT/Dagsa June 2026 Photobooth Photostrip.png"\n\nIf you are running from a local file, please use a local server (e.g. GitHub Pages, VS Code Live Server).');
+    return;
+  }
+
+  const template = new Image();
+  template.onload = function() {
+    const TW = template.naturalWidth;
+    const TH = template.naturalHeight;
+
+    canvas.width  = TW;
+    canvas.height = TH;
+
+    // 1. Draw the template (frame)
+    ctx.drawImage(template, 0, 0, TW, TH);
+    URL.revokeObjectURL(templateBlobUrl); // free memory
+
+    // 2. Draw each captured photo into its slot
+    let loadedCount = 0;
+    capturedPhotos.forEach((src, i) => {
+      const img = new Image();
+      img.onload = function() {
+        const s = SLOTS[i];
+        const sx = Math.round(s.xPct * TW);
+        const sy = Math.round(s.yPct * TH);
+        const sw = Math.round(s.wPct * TW);
+        const sh = Math.round(s.hPct * TH);
+
+        // Cover-fit the photo into the slot
+        const imgAspect  = img.naturalWidth / img.naturalHeight;
+        const slotAspect = sw / sh;
+        let drawW, drawH, drawX, drawY;
+        if (imgAspect > slotAspect) {
+          drawH = sh;
+          drawW = sh * imgAspect;
+          drawX = sx + (sw - drawW) / 2;
+          drawY = sy;
+        } else {
+          drawW = sw;
+          drawH = sw / imgAspect;
+          drawX = sx;
+          drawY = sy + (sh - drawH) / 2;
+        }
+
+        ctx.save();
+        // Clip to slot bounds so photo doesn't overflow
+        ctx.beginPath();
+        ctx.rect(sx, sy, sw, sh);
+        ctx.clip();
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.restore();
+
+        loadedCount++;
+        if (loadedCount === capturedPhotos.length) {
+          // All photos composited — show result
+          showCompositeResult(canvas);
+        }
+      };
+      img.src = src;
+    });
+  };
+
+  template.onerror = function() {
+    console.error('Failed to render template image.');
+    alert('Template image failed to render. Please try again.');
+  };
+
+  template.src = templateBlobUrl;
+}
+
+function showCompositeResult(canvas) {
+  const resultImg = document.getElementById('photostrip-result');
+  resultImg.src = canvas.toDataURL('image/png');
+  goTo('screen-check');
+}
+
+/* ============================================================
+   SCREEN 5 ACTIONS
+============================================================ */
+function confirmPhotos() {
+  // Trigger download of the composited photostrip
+  const canvas = document.getElementById('canvas-composite');
+  const link   = document.createElement('a');
+  const now    = new Date();
+  const ts     = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+  link.download = `DAGSA2026_Photostrip_${ts}.png`;
+  link.href     = canvas.toDataURL('image/png');
+  link.click();
+
+  // Go to thank you screen
+  goTo('screen-thankyou');
+  startThankYouCountdown();
+}
+
+function retakePhotos() {
+  capturedPhotos = [];
+  startCamera();
+}
+
+/* ============================================================
+   SCREEN 6: THANK YOU COUNTDOWN
+============================================================ */
+function startThankYouCountdown() {
+  const bar     = document.getElementById('return-bar');
+  const secEl   = document.getElementById('return-seconds');
+  let secs      = 5;
+  let elapsed   = 0;
+  const total   = secs * 1000;
+  const interval = 50; // ms
+
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+
+  setTimeout(() => {
+    bar.style.transition = `width ${total}ms linear`;
+    bar.style.width = '0%';
+  }, 50);
+
+  secEl.textContent = secs;
+  const tick = setInterval(() => {
+    elapsed += interval;
+    const remaining = Math.ceil((total - elapsed) / 1000);
+    if (remaining !== parseInt(secEl.textContent)) {
+      secEl.textContent = remaining;
+    }
+    if (elapsed >= total) {
+      clearInterval(tick);
+      resetApp();
+    }
+  }, interval);
+}
+
+function resetApp() {
+  capturedPhotos = [];
+  photoSequenceRunning = false;
+  stopCamera();
+  resetDots();
+  document.getElementById('camera-status').textContent = 'Getting ready…';
+  goTo('screen-welcome');
+}
+</script>
+</body>
+</html>

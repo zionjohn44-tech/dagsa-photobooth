@@ -577,10 +577,10 @@ async function buildComposite() {
   let slots = detectSlots(imgData.data, TW, TH);
   console.log('[Photobooth] Slots detected:', slots.length, slots);
 
-  // ── 4. Erase white/near-white pixels from template copy ───
-  //   This makes the opaque white photo boxes transparent so
-  //   photos drawn underneath show through cleanly.
-  eraseWhite(imgData.data, 230);
+  // ── 4. Erase white pixels ONLY inside slot areas ────────
+  //   This makes the photo boxes transparent so photos show
+  //   through, while preserving white text in the DAGSA header.
+  eraseWhiteInSlots(imgData.data, TW, slots, 230);
   offCtx.putImageData(imgData, 0, 0);
 
   // ── 5. Build final composite ──────────────────────────────
@@ -700,11 +700,17 @@ function calcFallback(w, h) {
   }));
 }
 
-/* Make all white/near-white pixels transparent in the pixel array */
-function eraseWhite(data, threshold) {
-  for (let i = 0; i < data.length; i += 4) {
-    if (data[i] > threshold && data[i+1] > threshold && data[i+2] > threshold) {
-      data[i+3] = 0;
+/* Erase white pixels ONLY within detected slot rectangles.
+   Pixels in the header, footer, and borders are untouched. */
+function eraseWhiteInSlots(data, w, slots, threshold) {
+  for (const s of slots) {
+    for (let y = s.y; y < s.y + s.h; y++) {
+      for (let x = s.x; x < s.x + s.w; x++) {
+        const i = (y * w + x) * 4;
+        if (data[i] > threshold && data[i+1] > threshold && data[i+2] > threshold) {
+          data[i+3] = 0; // transparent
+        }
+      }
     }
   }
 }

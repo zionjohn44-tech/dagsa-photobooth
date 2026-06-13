@@ -539,11 +539,11 @@ function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ============================================================
    COMPOSITE BUILDER
-   Strategy: photos drawn BEHIND the template PNG overlay.
-   - Scan template for white rectangular regions (the photo slots).
-   - Draw captured photos at those positions.
-   - Draw template PNG on top — its dark areas cover everything
-     except the white boxes, which are painted over by the photos.
+   Three-layer strategy:
+   1. Detect photo slots (try transparent → white pixels → hardcoded fallback)
+   2. Erase white pixels from a template copy (make them transparent)
+   3. Draw: dark bg → photos in slots → erased-template on top
+   This works whether the template uses transparent or opaque-white slots.
 ============================================================ */
 const TEMPLATE_SRC = 'FOR%20PHOTOSHOOT/Dagsa%20June%202026%20Photobooth%20Photostrip.png';
 
@@ -551,47 +551,53 @@ async function buildComposite() {
   const canvas = document.getElementById('canvas-composite');
   const ctx    = canvas.getContext('2d');
 
-  // 1. Fetch template as blob (avoids tainted-canvas restriction)
+  // ── 1. Fetch & load template ─────────────────────────────
   let blobUrl;
   try {
     const resp = await fetch(TEMPLATE_SRC);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     blobUrl = URL.createObjectURL(await resp.blob());
   } catch (e) {
-    alert('Could not load template: ' + e.message);
+    alert('Could not load template:\n' + e.message);
     return;
   }
-
-  // 2. Load template image
   const template = await loadImg(blobUrl);
   const TW = template.naturalWidth;
   const TH = template.naturalHeight;
+  console.log('[Photobooth] Template size:', TW, '×', TH);
 
-  // 3. Scan template pixels to find the 3 white photo slots
+  // ── 2. Draw template onto offscreen canvas for pixel ops ──
   const offscr = document.createElement('canvas');
   offscr.width = TW; offscr.height = TH;
-  const offCtx = offscr.getContext('2d');
+  const offCtx = offscr.getContext('2d', { willReadFrequently: true });
   offCtx.drawImage(template, 0, 0);
+
+  // ── 3. Detect photo slot positions ────────────────────────
   const imgData = offCtx.getImageData(0, 0, TW, TH);
-  const slots = detectWhiteSlots(imgData.data, TW, TH);
+  let slots = detectSlots(imgData.data, TW, TH);
+  console.log('[Photobooth] Slots detected:', slots.length, slots);
 
-  console.log('[Photobooth] Template:', TW, '×', TH, '| Slots found:', slots);
+  // ── 4. Erase white/near-white pixels from template copy ───
+  //   This makes the opaque white photo boxes transparent so
+  //   photos drawn underneath show through cleanly.
+  eraseWhite(imgData.data, 230);
+  offCtx.putImageData(imgData, 0, 0);
 
-  // 4. Build final composite canvas
+  // ── 5. Build final composite ──────────────────────────────
   canvas.width  = TW;
   canvas.height = TH;
 
-  // Dark fill so nothing shows through template edges
+  // Dark background
   ctx.fillStyle = '#060e28';
   ctx.fillRect(0, 0, TW, TH);
 
-  // 5. Draw each captured photo into its detected slot
+  // Draw each captured photo into its slot
   for (let i = 0; i < Math.min(capturedPhotos.length, slots.length); i++) {
     const photo = await loadImg(capturedPhotos[i]);
     const s = slots[i];
 
-    // Cover-fit photo into the slot rectangle
-    const pa = photo.naturalWidth / photo.naturalHeight;
+    // Cover-fit: fill slot without stretching
+    const pa = photo.naturalWidth  / photo.naturalHeight;
     const sa = s.w / s.h;
     let dw, dh, dx, dy;
     if (pa > sa) {
@@ -610,64 +616,99 @@ async function buildComposite() {
     ctx.restore();
   }
 
-  // 6. Draw template ON TOP — this layers the branded frame over the photos
-  ctx.drawImage(template, 0, 0, TW, TH);
+  // Draw the white-erased template on top (frame/branding only, no white)
+  ctx.drawImage(offscr, 0, 0, TW, TH);
 
   URL.revokeObjectURL(blobUrl);
   showResult(canvas);
 }
 
-/* Scan pixel data for large white rectangular bands (the photo slots) */
-function detectWhiteSlots(data, w, h) {
+/* ── detectSlots: tries 3 strategies in order ── */
+function detectSlots(data, w, h) {
+  // Strategy A: transparent areas (alpha < 100)
+  let slots = scanRegions(data, w, h,
+    i => data[i+3] < 100,
+    0.30, 0.20);
+  if (slots.length >= 1) {
+    console.log('[Photobooth] Detected via alpha channel');
+    return slots.slice(0, 3);
+  }
+
+  // Strategy B: white/bright areas (R,G,B all > 210, fully opaque)
+  slots = scanRegions(data, w, h,
+    i => data[i] > 210 && data[i+1] > 210 && data[i+2] > 210 && data[i+3] > 150,
+    0.25, 0.15);
+  if (slots.length >= 1) {
+    console.log('[Photobooth] Detected via white pixels');
+    return slots.slice(0, 3);
+  }
+
+  // Strategy C: hardcoded fallback based on typical photostrip layout
+  console.log('[Photobooth] Using hardcoded fallback positions');
+  return calcFallback(w, h);
+}
+
+/* Scan pixel rows for bands matching pixelTest at or above minRatio.
+   exitRatio is the lower threshold that ends a slot band. */
+function scanRegions(data, w, h, pixelTest, minRatio, exitRatio) {
   const slots = [];
-  let inSlot = false;
-  let slotY0 = 0, slotX0 = w, slotX1 = 0;
+  let inSlot = false, y0 = 0, x0 = w, x1 = 0;
 
   for (let y = 0; y < h; y++) {
-    let wCount = 0;
-    let rowX0 = w, rowX1 = 0;
-
+    let count = 0, rx0 = w, rx1 = 0;
     for (let x = 0; x < w; x++) {
       const i = (y * w + x) * 4;
-      if (data[i] > 230 && data[i+1] > 230 && data[i+2] > 230) {
-        wCount++;
-        if (x < rowX0) rowX0 = x;
-        if (x > rowX1) rowX1 = x;
+      if (pixelTest(i)) {
+        count++;
+        if (x < rx0) rx0 = x;
+        if (x > rx1) rx1 = x;
       }
     }
+    const ratio = count / w;
 
-    const ratio = wCount / w;
-
-    if (!inSlot && ratio > 0.62) {
-      inSlot  = true;
-      slotY0  = y;
-      slotX0  = rowX0;
-      slotX1  = rowX1;
+    if (!inSlot && ratio >= minRatio) {
+      inSlot = true; y0 = y; x0 = rx0; x1 = rx1;
     } else if (inSlot) {
-      if (ratio > 0.45) {
-        // Continue — expand x bounds
-        if (rowX0 < slotX0) slotX0 = rowX0;
-        if (rowX1 > slotX1) slotX1 = rowX1;
+      if (ratio >= exitRatio) {
+        if (rx0 < x0) x0 = rx0;
+        if (rx1 > x1) x1 = rx1;
       } else {
-        // End of this slot
-        const slotH = y - slotY0;
-        if (slotH > 60) {
-          slots.push({ x: slotX0, y: slotY0, w: slotX1 - slotX0 + 1, h: slotH });
-        }
-        inSlot = false;
-        slotX0 = w; slotX1 = 0;
+        const sh = y - y0;
+        if (sh > 40) slots.push({ x: x0, y: y0, w: x1 - x0 + 1, h: sh });
+        inSlot = false; x0 = w; x1 = 0;
       }
     }
   }
-
-  // Close any slot still open at bottom of image
   if (inSlot) {
-    const slotH = h - slotY0;
-    if (slotH > 60) slots.push({ x: slotX0, y: slotY0, w: slotX1 - slotX0 + 1, h: slotH });
+    const sh = h - y0;
+    if (sh > 40) slots.push({ x: x0, y: y0, w: x1 - x0 + 1, h: sh });
   }
-
   return slots;
 }
+
+/* Hardcoded fallback: 613×423 slots, centered, header ~30%, even spacing */
+function calcFallback(w, h) {
+  const sw  = Math.min(613, Math.round(w * 0.90));
+  const sh  = 423;
+  const sx  = Math.round((w - sw) / 2);
+  const bodyStart = Math.round(h * 0.29);
+  const bodyEnd   = Math.round(h * 0.97);
+  const bodyH     = bodyEnd - bodyStart;
+  const gap       = Math.round((bodyH - sh * 3) / 4);
+  return [0, 1, 2].map(i => ({
+    x: sx, y: bodyStart + gap + i * (sh + gap), w: sw, h: sh
+  }));
+}
+
+/* Make all white/near-white pixels transparent in the pixel array */
+function eraseWhite(data, threshold) {
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i] > threshold && data[i+1] > threshold && data[i+2] > threshold) {
+      data[i+3] = 0;
+    }
+  }
+}
+
 
 function loadImg(src) {
   return new Promise((res, rej) => {

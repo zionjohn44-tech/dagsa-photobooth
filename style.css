@@ -522,6 +522,251 @@ a  { text-decoration: none; color: inherit; }
   .fam-img-wrap { height: 200px; }
 }
 
+/* =========================================
+   HOME TRANSITIONS SECTION (new pair layout)
+   ========================================= */
+.home-transitions-section {
+  background: rgba(0,0,0,0.25);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0;
+}
+
+.home-transition-group {
+  margin-bottom: 4rem;
+}
+.home-transition-group:last-child {
+  margin-bottom: 0;
+}
+
+/* The group header: [Badge] → [Badge] */
+.ht-group-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.ht-badge {
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.45rem 1.3rem;
+  border-radius: 50px;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+
+.ht-group-arrow {
+  font-size: 1.6rem;
+  color: var(--gold);
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* Row of persons within a group */
+.ht-persons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2rem;
+}
+
+/* One person = single card (image + name) */
+.ht-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: default;
+}
+
+/* Image wrapper */
+.ht-img-wrap {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  background: rgba(255,255,255,0.03);
+  transition: box-shadow var(--transition);
+}
+.ht-img-wrap img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.ht-person:hover .ht-img-wrap {
+  box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+  border-color: rgba(255,255,255,0.22);
+}
+.ht-person:hover .ht-img-wrap img {
+  transform: scale(1.04);
+}
+/* Name below the image */
+.ht-person-name {
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 700px) {
+  .ht-persons { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+/* =========================================
+   FAM TRANSITION SECTION (old, kept for compatibility)
+   ========================================= */
+.fam-transition-section {
+  padding-bottom: 0;
+}
+
+.transition-group {
+  margin-bottom: 3.5rem;
+}
+
+.transition-group-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.transition-from-badge,
+.transition-to-badge {
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.45rem 1.2rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+.transition-arrow {
+  font-size: 1.4rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.transition-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.transition-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform var(--transition), box-shadow var(--transition);
+  cursor: default;
+}
+.transition-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.transition-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.transition-card:hover .transition-img {
+  transform: scale(1.04);
+}
+
+.transition-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1.25rem;
+}
+
+.transition-name {
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.transition-from-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+}
+.transition-from-label strong {
+  color: var(--gold);
+}
+
+@media (max-width: 700px) {
+  .transition-cards { grid-template-columns: 1fr; }
+  .transition-group-header { gap: 0.6rem; }
+}
+
+/* =========================================
+   MODAL GALLERY ITEMS (FAM Photos)
+   ========================================= */
+.modal-gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  background: rgba(255,255,255,0.04);
+}
+.modal-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+.modal-gallery-item:hover img {
+  transform: scale(1.06);
+}
+.modal-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,22,40,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.modal-gallery-item:hover .modal-gallery-overlay {
+  opacity: 1;
+}
+.modal-gallery-overlay span {
+  font-family: 'AnimeAce', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.1em;
+  background: rgba(244,196,48,0.2);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  border: 1px solid rgba(244,196,48,0.5);
+}
+
 /* FAM MODAL */
 .fam-modal {
   display: none;
@@ -697,6 +942,345 @@ a  { text-decoration: none; color: inherit; }
 
 @media (max-width: 700px) {
   .gallery-grid { grid-template-columns: 1fr; }
+}
+
+
+/* =========================================
+   LOAD MORE — strip gallery pagination
+   ========================================= */
+.load-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0 1rem;
+}
+
+.load-more-counter {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.06em;
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  text-align: center;
+}
+
+.btn-load-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0d1b3e;
+  background: var(--gold);
+  border: none;
+  padding: 0.85rem 2.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(244,196,48,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-load-more::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.15);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: inherit;
+}
+.btn-load-more:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(244,196,48,0.5);
+}
+.btn-load-more:hover::after { opacity: 1; }
+.btn-load-more:active { transform: translateY(0); }
+
+/* Fade-in animation for new strip cards */
+.strip-slot.load-more-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.strip-slot.load-more-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   PHOTOSTRIP GALLERY — layered fan grid
+   ========================================= */
+
+/* Floating keyframes (staggered per slot) */
+@keyframes stripFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes stripFloat2 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes stripFloat3 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* 3-column responsive grid */
+.strip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5rem 2.5rem;
+  padding-bottom: 2rem;
+}
+
+/* Each slot: floating wrapper */
+.strip-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  cursor: pointer;
+}
+.strip-slot:nth-child(3n+1) .strip-fan { animation: stripFloat  4.2s ease-in-out infinite; }
+.strip-slot:nth-child(3n+2) .strip-fan { animation: stripFloat2 3.8s ease-in-out infinite; }
+.strip-slot:nth-child(3n+3) .strip-fan { animation: stripFloat3 4.6s ease-in-out infinite; }
+
+/* Fan container: two strips overlap */
+.strip-fan {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+  /* front strip drives the height naturally */
+}
+
+/* Back copy — rotated slightly left */
+.strip-back {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(-8deg);
+  width: 80%;
+  border-radius: 6px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+  transition: transform var(--transition), box-shadow var(--transition);
+  pointer-events: none;
+  border: 3px solid rgba(255,255,255,0.18);
+}
+
+/* Front copy — the main strip */
+.strip-front {
+  position: relative;
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  border: 3px solid rgba(255,255,255,0.28);
+  transition: transform var(--transition), box-shadow var(--transition);
+  z-index: 1;
+}
+
+/* Hover: fan opens further */
+.strip-slot:hover .strip-back {
+  transform: translateX(-50%) rotate(-14deg) translateX(-6px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.6);
+}
+.strip-slot:hover .strip-front {
+  transform: scale(1.04) rotate(2deg);
+  box-shadow: 0 20px 55px rgba(0,0,0,0.65);
+}
+
+/* Number label (01, 02 …) */
+.strip-number {
+  font-family: 'AnimeAce', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: -0.5rem;
+}
+
+/* Download button under each slot */
+.strip-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.4rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy);
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(244,196,48,0.35);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  text-transform: uppercase;
+}
+.strip-dl-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(244,196,48,0.55);
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .strip-grid { grid-template-columns: repeat(2, 1fr); gap: 3rem 2rem; }
+}
+@media (max-width: 560px) {
+  .strip-grid { grid-template-columns: 1fr; gap: 3rem 0; }
+}
+
+/* =========================================
+   STRIP PREVIEW LIGHTBOX
+   ========================================= */
+.strip-lightbox {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 3000;
+  background: rgba(5,10,25,0.92);
+  backdrop-filter: blur(12px);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.strip-lightbox.open { display: flex; animation: fadeIn 0.25s ease; }
+
+.strip-lightbox-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-height: 90vh;
+  animation: slideUp 0.3s ease;
+}
+
+.lightbox-img {
+  max-height: 78vh;
+  max-width: min(420px, 90vw);
+  border-radius: 10px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+  border: 3px solid rgba(255,255,255,0.15);
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), transform var(--transition);
+  z-index: 10;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+
+.lightbox-dl {
+  font-size: 0.85rem;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 6px 24px rgba(244,196,48,0.4);
+}
+
+/* =========================================
+   INSTAGRAM TAG CTA BANNER
+   ========================================= */
+.ig-cta-banner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.8rem 2.2rem;
+  margin-top: 3rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.7s ease both;
+}
+
+.ig-cta-icon {
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(214,36,159,0.45);
+}
+
+.ig-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.ig-cta-label {
+  font-family: 'AnimeAce', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.ig-cta-handle {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.4;
+}
+
+.ig-cta-handle strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.ig-cta-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.6rem;
+  border-radius: 50px;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  color: #fff;
+  font-family: 'AnimeAce', 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(214,36,159,0.4);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+}
+.ig-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(214,36,159,0.6);
+  filter: brightness(1.1);
+}
+
+@media (max-width: 640px) {
+  .ig-cta-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  .ig-cta-text { align-items: center; }
 }
 
 /* =========================================
